@@ -12,17 +12,38 @@ services:
       - "443:443"
     depends_on:
       - backend
+      - frontend
+      - minio
+    networks:
+      - network_js
+
+  frontend:
+    container_name: frontend_js
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    volumes:
+      - ./frontend:/usr/src/frontend
+    env_file:
+      - .env
+    ports:
+      - "${FRONTEND_PORT}:${FRONTEND_PORT}"
+    depends_on:
+      - backend
+      - minio
+    tty: true
+    stdin_open: true
     networks:
       - network_js
 
   backend:
     container_name: backend_js
     build:
-      dockerfile: Dockerfile
       context: backend
+      dockerfile: Dockerfile
       target: development
     volumes:
-      - ./backend:/usr/src/app
+      - ./backend:/usr/src/backend
     command: npm run start:dev
     env_file:
       - .env
@@ -63,8 +84,8 @@ services:
     env_file:
       - .env
     ports:
-      - "9100:9000"
-      - "9101:9001"
+      - "9000:9000"
+      - "9001:9001"
     networks:
       - network_js
 
