@@ -1,3 +1,6 @@
 [submodule "backend"]
 	path = backend
 	url = https://github.com/Jang-Sen/socar-clone.git
+[submodule "frontend"]
+	path = frontend
+	url = https://github.com/Jang-Sen/socar_frontend.git
