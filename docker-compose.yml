@@ -8,8 +8,8 @@ services:
       - ./.cert/cert.pem:/etc/nginx/.cert/cert.pem
       - ./.cert/key.pem:/etc/nginx/.cert/key.pem
     ports:
-      - "80:80"
-      - "443:443"
+      - "81:80"
+      - "442:443"
     depends_on:
       - backend
       - frontend
@@ -27,7 +27,7 @@ services:
     env_file:
       - .env
     ports:
-      - "${FRONTEND_PORT}:${FRONTEND_PORT}"
+      - "${FRONTEND_EXTERNAL_PORT}:${FRONTEND_PORT}"
     depends_on:
       - backend
       - minio
@@ -44,11 +44,11 @@ services:
       target: development
     volumes:
       - ./backend:/usr/src/backend
-    command: npm run start:dev
+    command: npm run start:prod
     env_file:
       - .env
     ports:
-      - "${BACKEND_PORT}:${BACKEND_PORT}"
+      - "${BACKEND_EXTERNAL_PORT}:${BACKEND_PORT}"
     depends_on:
       - postgres
       - redis
