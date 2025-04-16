@@ -8,8 +8,8 @@ services:
       - ./.cert/cert.pem:/etc/nginx/.cert/cert.pem
       - ./.cert/key.pem:/etc/nginx/.cert/key.pem
     ports:
-      - "81:80"
-      - "442:443"
+      - "${NGINX_HTTP_PORT}:80"
+      - "${NGINX_HTTPS_PORT}:443"
     depends_on:
       - backend
       - frontend
@@ -25,9 +25,9 @@ services:
     volumes:
       - ./frontend:/usr/src/frontend
     env_file:
-      - .env
+      - .env.docker
     ports:
-      - "${FRONTEND_EXTERNAL_PORT}:${FRONTEND_PORT}"
+      - "${FRONTEND_PORT}:3000"
     depends_on:
       - backend
       - minio
@@ -44,14 +44,14 @@ services:
       target: development
     volumes:
       - ./backend:/usr/src/backend
-    command: npm run start:prod
+    command: npm run start:dev
     env_file:
-      - .env
+      - .env.docker
     ports:
-      - "${BACKEND_EXTERNAL_PORT}:${BACKEND_PORT}"
+      - "${BACKEND_PORT}:8000"
     depends_on:
       - postgres
-      - redis
+      - redis_js
       - minio
     networks:
       - network_js
@@ -60,21 +60,17 @@ services:
     container_name: postgres_js
     image: postgres:latest
     restart: always
-    env_file:
-      - .env
     ports:
-      - "${POSTGRES_EXTERNAL_PORT}:${POSTGRES_PORT}"
+      - "${POSTGRES_PORT}:5432"
     networks:
       - network_js
 
-  redis:
+  redis_js:
     container_name: redis_js
     image: redis:alpine
     restart: always
-    env_file:
-      - .env
     ports:
-      - "${REDIS_EXTERNAL_PORT}:${REDIS_PORT}"
+      - "${REDIS_PORT}:6379"
     networks:
       - network_js
 
@@ -82,10 +78,10 @@ services:
     container_name: minio_js
     image: bitnami/minio
     env_file:
-      - .env
+      - .env.docker
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - "${MINIO_PORT}:9000"
+      - "${MINIO_CONSOLE_PORT}:9001"
     networks:
       - network_js
 
