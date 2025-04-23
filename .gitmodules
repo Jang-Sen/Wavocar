@@ -1,6 +1,6 @@
 [submodule "backend"]
 	path = backend
-	url = https://github.com/Jang-Sen/socar-clone.git
+	url = https://github.com/Jang-Sen/wavocar-backend.git
 [submodule "frontend"]
 	path = frontend
-	url = https://github.com/Jang-Sen/socar_frontend.git
+	url = https://github.com/Jang-Sen/wavocar-frontend.git
