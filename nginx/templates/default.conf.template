@@ -1,13 +1,13 @@
 upstream frontend {
-    server frontend_js:3000;
+    server wavocar_frontend:3000;
 }
 
 upstream backend {
-    server backend_js:8000;
+    server wavocar_backend:8000;
 }
 
 upstream minio {
-    server minio_js:9000;
+    server wavocar_minio:9000;
 }
 
 server {

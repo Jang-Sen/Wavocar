@@ -1,6 +1,6 @@
 services:
   nginx:
-    container_name: nginx_js
+    container_name: wavocar_nginx
     image: nginx:stable-alpine
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
@@ -15,10 +15,10 @@ services:
       - frontend
       - minio
     networks:
-      - network_js
+      - wavocar_network
 
   frontend:
-    container_name: frontend_js
+    container_name: wavocar_frontend
     build:
       context: frontend
       dockerfile: Dockerfile
@@ -34,10 +34,10 @@ services:
     tty: true
     stdin_open: true
     networks:
-      - network_js
+      - wavocar_network
 
   backend:
-    container_name: backend_js
+    container_name: wavocar_backend
     build:
       context: backend
       dockerfile: Dockerfile
@@ -51,31 +51,35 @@ services:
       - "${BACKEND_PORT}:8000"
     depends_on:
       - postgres
-      - redis_js
+      - redis
       - minio
     networks:
-      - network_js
+      - wavocar_network
 
   postgres:
-    container_name: postgres_js
+    container_name: wavocar_postgres
     image: postgres:latest
     restart: always
+    env_file:
+      - .env.docker
     ports:
       - "${POSTGRES_PORT}:5432"
     networks:
-      - network_js
+      - wavocar_network
 
-  redis_js:
-    container_name: redis_js
+  redis:
+    container_name: wavocar_redis
     image: redis:alpine
     restart: always
+    env_file:
+      - .env.docker
     ports:
       - "${REDIS_PORT}:6379"
     networks:
-      - network_js
+      - wavocar_network
 
   minio:
-    container_name: minio_js
+    container_name: wavocar_minio
     image: bitnami/minio
     env_file:
       - .env.docker
@@ -83,9 +87,8 @@ services:
       - "${MINIO_PORT}:9000"
       - "${MINIO_CONSOLE_PORT}:9001"
     networks:
-      - network_js
+      - wavocar_network
 
 networks:
-  network_js:
+  wavocar_network:
     driver: bridge
-    #    external: true
